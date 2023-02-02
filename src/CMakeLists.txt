@@ -3,7 +3,6 @@
 
 set(app_sources
 	"main.c"
-	"cmdline.c"
 )
 
 idf_component_register(SRCS ${app_sources}

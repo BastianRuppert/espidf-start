@@ -28,6 +28,8 @@
 static const char* TAG = "example";
 #define PROMPT_STR CONFIG_IDF_TARGET
 
+static int misccmds(int argc, char** argv);
+
 /* Console command history can be stored to and loaded from a file.
  * The easiest way to do this is to use FATFS filesystem on top of
  * wear_levelling library.
@@ -51,6 +53,34 @@ static void initialize_filesystem(void)
     }
 }
 #endif // CONFIG_STORE_HISTORY
+
+const esp_console_cmd_t misc_cmd = {
+  .command = "misc",
+  .help = "misc <cmd1> | <cmd2>\n",
+  .hint  = NULL,
+  .func = &misccmds,
+};
+
+static int misccmds(int argc, char** argv)
+{
+  if(argc >= 2)
+    {
+      if(0==strcasecmp("cmd1",argv[1]))
+        {
+          printf("this is cmd1\n");
+        }
+      else if(0==strcasecmp("cmd2",argv[1]))
+      {
+        ESP_LOGI(TAG, "cmd2");
+      }
+    }
+  else
+    {
+      ESP_LOGI(TAG, "%s",misc_cmd.help);
+    }
+  return 0;
+}
+
 
 static void initialize_nvs(void)
 {
@@ -152,6 +182,9 @@ void app_main(void)
     register_wifi();
     register_nvs();
 
+    //misc_register_cmds
+    ESP_ERROR_CHECK( esp_console_cmd_register(&misc_cmd) );
+
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
      */
@@ -187,10 +220,12 @@ void app_main(void)
          */
         char* line = linenoise(prompt);
         if (line == NULL) { /* Break on EOF or error */
-            break;
+            //break;
+            //use continue here for a next try
+            continue;
         }
         /* Add the command to the history if not empty*/
-        if (strlen(line) > 0) {
+        else if (strlen(line) > 0) {
             linenoiseHistoryAdd(line);
 #if CONFIG_STORE_HISTORY
             /* Save command history to filesystem */
