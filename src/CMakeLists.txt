@@ -3,6 +3,8 @@
 
 set(app_sources
 	"main.c"
+	"peripSDR.c"
+	"selectTask.c"
 )
 
 idf_component_register(SRCS ${app_sources}

@@ -21,6 +21,9 @@
 #include "cmd_wifi.h"
 #include "cmd_nvs.h"
 
+#include "peripSDR.h"
+#include "selectTask.h"
+
 #ifdef CONFIG_ESP_CONSOLE_USB_CDC
 #error This example is incompatible with USB CDC console. Please try "console_usb" example instead.
 #endif // CONFIG_ESP_CONSOLE_USB_CDC
@@ -61,6 +64,8 @@ const esp_console_cmd_t misc_cmd = {
   .func = &misccmds,
 };
 
+static char sendbuf[128];
+
 static int misccmds(int argc, char** argv)
 {
   if(argc >= 2)
@@ -71,7 +76,13 @@ static int misccmds(int argc, char** argv)
         }
       else if(0==strcasecmp("cmd2",argv[1]))
       {
-        ESP_LOGI(TAG, "cmd2");
+        static int counter = 0;
+
+        snprintf(sendbuf,127,"data out %i\n",counter);
+        peripSDR_send_HostUART(sendbuf,strlen(sendbuf));
+        counter++;
+
+        ESP_LOGI(TAG, "cmd2 send some data to uart");
       }
     }
   else
@@ -174,15 +185,17 @@ void app_main(void)
     ESP_LOGI(TAG, "Command history disabled");
 #endif
 
+    selectTask_init();
+
     initialize_console();
 
     /* Register commands */
     esp_console_register_help_command();
     register_system();
-    register_wifi();
-    register_nvs();
+    //register_wifi();
+    //register_nvs();
 
-    //misc_register_cmds
+    /* register own misc_cmd`s */
     ESP_ERROR_CHECK( esp_console_cmd_register(&misc_cmd) );
 
     /* Prompt to be printed before each line.
