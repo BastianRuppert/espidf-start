@@ -2,9 +2,10 @@
 
 Espressif advanced console example project with some adaptations.
 
-## Abstract
-
-    Grundfunktionen der esp-idf console.
+## Hilfe
+    Wenn eine Konsole folgenden Feher ausgibt:
+    "Your terminal application does not support escape sequences"
+    Dann ist es möglich auf Tera Term umzusteigen: https://tera-term.de.softonic.com/
 
 ### Versionen
     PlatformIO      Core 6.0.2  Home 3.4.3
@@ -16,5 +17,6 @@ Espressif advanced console example project with some adaptations.
 
 ### git
 
-v0.1
+V0.1.0
+    - select task for uart communication
     - cmdline
