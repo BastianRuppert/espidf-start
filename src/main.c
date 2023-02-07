@@ -22,7 +22,8 @@
 #include "cmd_nvs.h"
 
 #include "peripSDR.h"
-#include "selectTask.h"
+//#include "selectTask.h"
+#include "MQTT_worker.h"
 
 #ifdef CONFIG_ESP_CONSOLE_USB_CDC
 #error This example is incompatible with USB CDC console. Please try "console_usb" example instead.
@@ -185,18 +186,20 @@ void app_main(void)
     ESP_LOGI(TAG, "Command history disabled");
 #endif
 
-    selectTask_init();
+    //selectTask_init();
 
     initialize_console();
 
     /* Register commands */
     esp_console_register_help_command();
-    register_system();
+    //register_system();
     //register_wifi();
     //register_nvs();
 
     /* register own misc_cmd`s */
-    ESP_ERROR_CHECK( esp_console_cmd_register(&misc_cmd) );
+    //ESP_ERROR_CHECK( esp_console_cmd_register(&misc_cmd) );
+
+    workerMQTT_init();
 
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
